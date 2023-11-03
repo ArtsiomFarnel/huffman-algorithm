@@ -5,7 +5,7 @@
 #include <string>
 #include <cstdlib>
 #include <cmath>
-#include "Huffman.h"
+#include "Huffman.hpp"
 
 using namespace std;
 
@@ -16,94 +16,94 @@ float averageCodewordLength(int length[]);
 double entropy(float P[]);
 
 int main() {
-	//СЧИТЫВАНИЕ СООБЩЕНИЯ ИЗ ФАЙЛА
-	string buf; //буфер считываемой из файла строки
-	ifstream fin("input.txt"); //попытка открытия файла
-	if (!fin.is_open()) { //если файл не найден
+	//Г‘Г—Г€Г’Г›Г‚ГЂГЌГ€Г… Г‘ГЋГЋГЃГ™Г…ГЌГ€Гџ Г€Г‡ Г”ГЂГ‰Г‹ГЂ
+	string buf; //ГЎГіГґГҐГ° Г±Г·ГЁГІГ»ГўГ ГҐГ¬Г®Г© ГЁГ§ ГґГ Г©Г«Г  Г±ГІГ°Г®ГЄГЁ
+	ifstream fin("input.txt"); //ГЇГ®ГЇГ»ГІГЄГ  Г®ГІГЄГ°Г»ГІГЁГї ГґГ Г©Г«Г 
+	if (!fin.is_open()) { //ГҐГ±Г«ГЁ ГґГ Г©Г« Г­ГҐ Г­Г Г©Г¤ГҐГ­
 		cout << "File opening error: " << strerror(errno) << endl;
 		system("pause");
 		return EXIT_FAILURE;
 	}
 	else {
-		getline(fin, buf); //иначе считывание содержимого файла
+		getline(fin, buf); //ГЁГ­Г Г·ГҐ Г±Г·ГЁГІГ»ГўГ Г­ГЁГҐ Г±Г®Г¤ГҐГ°Г¦ГЁГ¬Г®ГЈГ® ГґГ Г©Г«Г 
 	}
 	//cout << "Text file content uploaded: " << buf << endl;
-	fin.close(); //закрытие файлового потока
+	fin.close(); //Г§Г ГЄГ°Г»ГІГЁГҐ ГґГ Г©Г«Г®ГўГ®ГЈГ® ГЇГ®ГІГ®ГЄГ 
 
-	//НАХОЖДЕНИЕ ВСЕХ УЗЛОВ БУДУЩЕГО ДЕРЕВА
-	Node *allNodes = new Node[51]; //выделение памяти для всех узлов
+	//ГЌГЂГ•ГЋГ†Г„Г…ГЌГ€Г… Г‚Г‘Г…Г• Г“Г‡Г‹ГЋГ‚ ГЃГ“Г„Г“Г™Г…ГѓГЋ Г„Г…ГђГ…Г‚ГЂ
+	Node *allNodes = new Node[51]; //ГўГ»Г¤ГҐГ«ГҐГ­ГЁГҐ ГЇГ Г¬ГїГІГЁ Г¤Г«Гї ГўГ±ГҐГµ ГіГ§Г«Г®Гў
 
-	Node *startNodes = allocateMemory(); //выделение памяти для начальных 26 узлов
-	for (int counter = 0; counter < 26; counter++) //поместить начальные узлы в список всех узлов
+	Node *startNodes = allocateMemory(); //ГўГ»Г¤ГҐГ«ГҐГ­ГЁГҐ ГЇГ Г¬ГїГІГЁ Г¤Г«Гї Г­Г Г·Г Г«ГјГ­Г»Гµ 26 ГіГ§Г«Г®Гў
+	for (int counter = 0; counter < 26; counter++) //ГЇГ®Г¬ГҐГ±ГІГЁГІГј Г­Г Г·Г Г«ГјГ­Г»ГҐ ГіГ§Г«Г» Гў Г±ГЇГЁГ±Г®ГЄ ГўГ±ГҐГµ ГіГ§Г«Г®Гў
 		allNodes[counter] = startNodes[counter];
 
-	Node* sums = new Node[25]; //выделение памяти для остальных узлов
-	sums = searchAllNodes(startNodes); //нахождение остальных узлов
-	for (int counter = 26; counter < 51; counter++) //поместить остальные узлы в список всех узлов
+	Node* sums = new Node[25]; //ГўГ»Г¤ГҐГ«ГҐГ­ГЁГҐ ГЇГ Г¬ГїГІГЁ Г¤Г«Гї Г®Г±ГІГ Г«ГјГ­Г»Гµ ГіГ§Г«Г®Гў
+	sums = searchAllNodes(startNodes); //Г­Г ГµГ®Г¦Г¤ГҐГ­ГЁГҐ Г®Г±ГІГ Г«ГјГ­Г»Гµ ГіГ§Г«Г®Гў
+	for (int counter = 26; counter < 51; counter++) //ГЇГ®Г¬ГҐГ±ГІГЁГІГј Г®Г±ГІГ Г«ГјГ­Г»ГҐ ГіГ§Г«Г» Гў Г±ГЇГЁГ±Г®ГЄ ГўГ±ГҐГµ ГіГ§Г«Г®Гў
 		allNodes[counter] = sums[counter-26];
 	
-	bubbleSorting(51, allNodes); //сортировка всех узлов по убыванию вероятностей
+	bubbleSorting(51, allNodes); //Г±Г®Г°ГІГЁГ°Г®ГўГЄГ  ГўГ±ГҐГµ ГіГ§Г«Г®Гў ГЇГ® ГіГЎГ»ГўГ Г­ГЁГѕ ГўГҐГ°Г®ГїГІГ­Г®Г±ГІГҐГ©
 
-	for (int counter = 1; counter < 51; counter++) { //присваивание всем узлам направления. 1 - лево, 0 - право
+	for (int counter = 1; counter < 51; counter++) { //ГЇГ°ГЁГ±ГўГ ГЁГўГ Г­ГЁГҐ ГўГ±ГҐГ¬ ГіГ§Г«Г Г¬ Г­Г ГЇГ°Г ГўГ«ГҐГ­ГЁГї. 1 - Г«ГҐГўГ®, 0 - ГЇГ°Г ГўГ®
 		if(counter %2 == 0)
 			allNodes[counter].code = "1";
 		else allNodes[counter].code = "0";
 	}
 
-	//ПОСТРОЕНИЕ ДЕРЕВА
-	Node *root = nullptr; //выделение памяти для дерева
-	for(int counter = 0; counter < 51; counter++) //построение дерева из 51 узла
+	//ГЏГЋГ‘Г’ГђГЋГ…ГЌГ€Г… Г„Г…ГђГ…Г‚ГЂ
+	Node *root = nullptr; //ГўГ»Г¤ГҐГ«ГҐГ­ГЁГҐ ГЇГ Г¬ГїГІГЁ Г¤Г«Гї Г¤ГҐГ°ГҐГўГ 
+	for(int counter = 0; counter < 51; counter++) //ГЇГ®Г±ГІГ°Г®ГҐГ­ГЁГҐ Г¤ГҐГ°ГҐГўГ  ГЁГ§ 51 ГіГ§Г«Г 
 		addNode(root, allNodes[counter]);
 
-	treePrint(root, 0); //вывод дерева в консоль
+	treePrint(root, 0); //ГўГ»ГўГ®Г¤ Г¤ГҐГ°ГҐГўГ  Гў ГЄГ®Г­Г±Г®Г«Гј
 
-	int length[26]; //массив для хранения длин кодовых слов
-	Node *leaf = new Node[26]; //выделение памяти для закодированных узлов
-	for (int counter = 0; counter < 26; counter++) { //построение итоговых кодов для 26 листов дерева
+	int length[26]; //Г¬Г Г±Г±ГЁГў Г¤Г«Гї ГµГ°Г Г­ГҐГ­ГЁГї Г¤Г«ГЁГ­ ГЄГ®Г¤Г®ГўГ»Гµ Г±Г«Г®Гў
+	Node *leaf = new Node[26]; //ГўГ»Г¤ГҐГ«ГҐГ­ГЁГҐ ГЇГ Г¬ГїГІГЁ Г¤Г«Гї Г§Г ГЄГ®Г¤ГЁГ°Г®ГўГ Г­Г­Г»Гµ ГіГ§Г«Г®Гў
+	for (int counter = 0; counter < 26; counter++) { //ГЇГ®Г±ГІГ°Г®ГҐГ­ГЁГҐ ГЁГІГ®ГЈГ®ГўГ»Гµ ГЄГ®Г¤Г®Гў Г¤Г«Гї 26 Г«ГЁГ±ГІГ®Гў Г¤ГҐГ°ГҐГўГ 
 		leaf[counter] = *codeBuilding(root, A[counter]);
 		length[counter] = leaf[counter].code.size();
 		cout << A[counter] << " : " << leaf[counter].code << " | Frequensy: " << leaf[counter].freq << endl;
-		//cout << "Size: " << arr[counter] << endl; //длина кодового слова
+		//cout << "Size: " << arr[counter] << endl; //Г¤Г«ГЁГ­Г  ГЄГ®Г¤Г®ГўГ®ГЈГ® Г±Г«Г®ГўГ 
 	}
-	cout << endl << "Entropy: " << entropy(P) << endl; //энтропия
-	cout << "Average codeword length: " << averageCodewordLength(length) << endl << endl; //средняя длина кодового слова
+	cout << endl << "Entropy: " << entropy(P) << endl; //ГЅГ­ГІГ°Г®ГЇГЁГї
+	cout << "Average codeword length: " << averageCodewordLength(length) << endl << endl; //Г±Г°ГҐГ¤Г­ГїГї Г¤Г«ГЁГ­Г  ГЄГ®Г¤Г®ГўГ®ГЈГ® Г±Г«Г®ГўГ 
 
-	//ЗАПИСЬ ЗАКОДИРОВАННОГО СООБЩЕНИЯ В ФАЙЛ
-	string codes; //буфер записываемых в файл кодов
-	ofstream fout("output.txt"); //попытка открытия файла
-	if (!fout.is_open()) { //если файл не найден
+	//Г‡ГЂГЏГ€Г‘Гњ Г‡ГЂГЉГЋГ„Г€ГђГЋГ‚ГЂГЌГЌГЋГѓГЋ Г‘ГЋГЋГЃГ™Г…ГЌГ€Гџ Г‚ Г”ГЂГ‰Г‹
+	string codes; //ГЎГіГґГҐГ° Г§Г ГЇГЁГ±Г»ГўГ ГҐГ¬Г»Гµ Гў ГґГ Г©Г« ГЄГ®Г¤Г®Гў
+	ofstream fout("output.txt"); //ГЇГ®ГЇГ»ГІГЄГ  Г®ГІГЄГ°Г»ГІГЁГї ГґГ Г©Г«Г 
+	if (!fout.is_open()) { //ГҐГ±Г«ГЁ ГґГ Г©Г« Г­ГҐ Г­Г Г©Г¤ГҐГ­
 		cout << "File opening error: " << strerror(errno) << endl;
 		system("pause");
 		return EXIT_FAILURE;
 	}
-	else { //иначе запись итоговых кодов в файл
+	else { //ГЁГ­Г Г·ГҐ Г§Г ГЇГЁГ±Гј ГЁГІГ®ГЈГ®ГўГ»Гµ ГЄГ®Г¤Г®Гў Гў ГґГ Г©Г«
 		const char *str = buf.c_str();
 		for (size_t first = 0; first < buf.length(); first++) {
 			for (int second = 0; second < 26; second++) {
 				if (str[first] == A[second]) {
 					fout << leaf[second].code;
-					codes += leaf[second].code; //записываемые в файл коды помещается в строку
+					codes += leaf[second].code; //Г§Г ГЇГЁГ±Г»ГўГ ГҐГ¬Г»ГҐ Гў ГґГ Г©Г« ГЄГ®Г¤Г» ГЇГ®Г¬ГҐГ№Г ГҐГІГ±Гї Гў Г±ГІГ°Г®ГЄГі
 				}
 			}
 		}
 	}
-	fout.close(); //закрытие файлового потока
+	fout.close(); //Г§Г ГЄГ°Г»ГІГЁГҐ ГґГ Г©Г«Г®ГўГ®ГЈГ® ГЇГ®ГІГ®ГЄГ 
 
-	//ЗАПИСЬ ЗАКОДИРОВАННОГО СООБЩЕНИЯ В ФАЙЛ В БАЙТОВОМ ВИДЕ
-	while (1) { //добавление дополнительных нулей к строке кодов для записи в байтовом виде
+	//Г‡ГЂГЏГ€Г‘Гњ Г‡ГЂГЉГЋГ„Г€ГђГЋГ‚ГЂГЌГЌГЋГѓГЋ Г‘ГЋГЋГЃГ™Г…ГЌГ€Гџ Г‚ Г”ГЂГ‰Г‹ Г‚ ГЃГЂГ‰Г’ГЋГ‚ГЋГЊ Г‚Г€Г„Г…
+	while (1) { //Г¤Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ Г¤Г®ГЇГ®Г«Г­ГЁГІГҐГ«ГјГ­Г»Гµ Г­ГіГ«ГҐГ© ГЄ Г±ГІГ°Г®ГЄГҐ ГЄГ®Г¤Г®Гў Г¤Г«Гї Г§Г ГЇГЁГ±ГЁ Гў ГЎГ Г©ГІГ®ГўГ®Г¬ ГўГЁГ¤ГҐ
 		codes += "0";
 		if (codes.size() % 8 == 0) break;
 	}
 	//cout << endl << codes.size() << endl;
 
-	ofstream fbout("binary.txt"); //попытка открытия файла
-	if (!fbout.is_open()) { //если файл не найден
+	ofstream fbout("binary.txt"); //ГЇГ®ГЇГ»ГІГЄГ  Г®ГІГЄГ°Г»ГІГЁГї ГґГ Г©Г«Г 
+	if (!fbout.is_open()) { //ГҐГ±Г«ГЁ ГґГ Г©Г« Г­ГҐ Г­Г Г©Г¤ГҐГ­
 		cout << "File opening error: " << strerror(errno) << endl;
 		system("pause");
 		return EXIT_FAILURE;
 	}
 	size_t counterr = 0;
-	while (counterr < codes.size()) { //запись итоговых кодов в файл в байтовом виде
+	while (counterr < codes.size()) { //Г§Г ГЇГЁГ±Гј ГЁГІГ®ГЈГ®ГўГ»Гµ ГЄГ®Г¤Г®Гў Гў ГґГ Г©Г« Гў ГЎГ Г©ГІГ®ГўГ®Г¬ ГўГЁГ¤ГҐ
 		bool bits[8];
 		for (int i = 0; i < 8; i++) {
 			if (codes[i + counterr] == '1')
@@ -112,25 +112,25 @@ int main() {
 				bits[i] = 0;
 			//cout << bits[i];
 		}
-		byte b = pack_byte(bits); //вызов функции упаковывания байтов
+		byte b = pack_byte(bits); //ГўГ»Г§Г®Гў ГґГіГ­ГЄГ¶ГЁГЁ ГіГЇГ ГЄГ®ГўГ»ГўГ Г­ГЁГї ГЎГ Г©ГІГ®Гў
 		fbout << b;
 		//cout << endl;
 		counterr += 8;
 	}
 	fbout.close();
 
-	//ОСВОБОЖДЕНИЕ ВЫДЕЛЕННОЙ ПАМЯТИ
-	freeMemory(startNodes); //освобождение выделенной памяти для начальных 26 узлов
-	delete[] sums; //освобождение памяти выделенной памяти для остальных узлов
-	delete[] allNodes; //освобождение выделенной памяти для всех узлов
-	freeTree(root); //освобождение выделенной памяти для дерева
-	delete[] leaf; //освобождение выделенной памяти для закодированных узлов
+	//ГЋГ‘Г‚ГЋГЃГЋГ†Г„Г…ГЌГ€Г… Г‚Г›Г„Г…Г‹Г…ГЌГЌГЋГ‰ ГЏГЂГЊГџГ’Г€
+	freeMemory(startNodes); //Г®Г±ГўГ®ГЎГ®Г¦Г¤ГҐГ­ГЁГҐ ГўГ»Г¤ГҐГ«ГҐГ­Г­Г®Г© ГЇГ Г¬ГїГІГЁ Г¤Г«Гї Г­Г Г·Г Г«ГјГ­Г»Гµ 26 ГіГ§Г«Г®Гў
+	delete[] sums; //Г®Г±ГўГ®ГЎГ®Г¦Г¤ГҐГ­ГЁГҐ ГЇГ Г¬ГїГІГЁ ГўГ»Г¤ГҐГ«ГҐГ­Г­Г®Г© ГЇГ Г¬ГїГІГЁ Г¤Г«Гї Г®Г±ГІГ Г«ГјГ­Г»Гµ ГіГ§Г«Г®Гў
+	delete[] allNodes; //Г®Г±ГўГ®ГЎГ®Г¦Г¤ГҐГ­ГЁГҐ ГўГ»Г¤ГҐГ«ГҐГ­Г­Г®Г© ГЇГ Г¬ГїГІГЁ Г¤Г«Гї ГўГ±ГҐГµ ГіГ§Г«Г®Гў
+	freeTree(root); //Г®Г±ГўГ®ГЎГ®Г¦Г¤ГҐГ­ГЁГҐ ГўГ»Г¤ГҐГ«ГҐГ­Г­Г®Г© ГЇГ Г¬ГїГІГЁ Г¤Г«Гї Г¤ГҐГ°ГҐГўГ 
+	delete[] leaf; //Г®Г±ГўГ®ГЎГ®Г¦Г¤ГҐГ­ГЁГҐ ГўГ»Г¤ГҐГ«ГҐГ­Г­Г®Г© ГЇГ Г¬ГїГІГЁ Г¤Г«Гї Г§Г ГЄГ®Г¤ГЁГ°Г®ГўГ Г­Г­Г»Гµ ГіГ§Г«Г®Гў
 
 	system("pause");
 	return EXIT_SUCCESS;
 }
 
-//ФУНКЦИЯ УПАКОВЫВАНИЯ БАЙТОВ
+//Г”Г“ГЌГЉГ–Г€Гџ Г“ГЏГЂГЉГЋГ‚Г›Г‚ГЂГЌГ€Гџ ГЃГЂГ‰Г’ГЋГ‚
 byte pack_byte(bool bits[8]) {
 	byte result(0);
 	for (unsigned i(8); i--;) {
@@ -140,7 +140,7 @@ byte pack_byte(bool bits[8]) {
 	return result;
 }
 
-//ФУНКЦИЯ ПОДСЧЕТА СРЕДНЕЙ ДЛИНЫ КОДОВОГО СЛОВА
+//Г”Г“ГЌГЉГ–Г€Гџ ГЏГЋГ„Г‘Г—Г…Г’ГЂ Г‘ГђГ…Г„ГЌГ…Г‰ Г„Г‹Г€ГЌГ› ГЉГЋГ„ГЋГ‚ГЋГѓГЋ Г‘Г‹ГЋГ‚ГЂ
 float averageCodewordLength(int length[]) {
 	float L = 0.0f;
 	for (int count = 0; count < 26; count++)
@@ -148,7 +148,7 @@ float averageCodewordLength(int length[]) {
 	return L;
 }
 
-//ФУНКЦИЯ ПОДСЧЕТА ЭНТРОПИИ
+//Г”Г“ГЌГЉГ–Г€Гџ ГЏГЋГ„Г‘Г—Г…Г’ГЂ ГќГЌГ’ГђГЋГЏГ€Г€
 double entropy(float P[]) {
 	double H = 0.0;
 	for (int count = 0; count < 26; count++)
