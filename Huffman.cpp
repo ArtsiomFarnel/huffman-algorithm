@@ -1,9 +1,9 @@
 #include <iostream>
-#include "Huffman.h"
+#include "Huffman.hpp"
 
 using namespace std;
 
-//убывание вероятности появления букв в тексте
+//ГіГЎГ»ГўГ Г­ГЁГҐ ГўГҐГ°Г®ГїГІГ­Г®Г±ГІГЁ ГЇГ®ГїГўГ«ГҐГ­ГЁГї ГЎГіГЄГў Гў ГІГҐГЄГ±ГІГҐ
 float P[26] = {
 		0.127f, 0.097f, 0.075f, 0.073f,
 		0.068f, 0.067f, 0.067f, 0.064f,
@@ -13,7 +13,7 @@ float P[26] = {
 		0.008f, 0.008f, 0.005f, 0.002f,
 		0.001f, 0.001f }; 
 
-//алфавит отсортированный по убыванию вероятности появления буквы
+//Г Г«ГґГ ГўГЁГІ Г®ГІГ±Г®Г°ГІГЁГ°Г®ГўГ Г­Г­Г»Г© ГЇГ® ГіГЎГ»ГўГ Г­ГЁГѕ ГўГҐГ°Г®ГїГІГ­Г®Г±ГІГЁ ГЇГ®ГїГўГ«ГҐГ­ГЁГї ГЎГіГЄГўГ»
 char A[26] = {
 		'e', 't', 'i', 'a',
 		'o', 'n', 's', 'r',
@@ -23,7 +23,7 @@ char A[26] = {
 		'v', 'k', 'x', 'q',
 		'z', 'j' }; 
 
-//выделение памяти для первых начальных узлов
+//ГўГ»Г¤ГҐГ«ГҐГ­ГЁГҐ ГЇГ Г¬ГїГІГЁ Г¤Г«Гї ГЇГҐГ°ГўГ»Гµ Г­Г Г·Г Г«ГјГ­Г»Гµ ГіГ§Г«Г®Гў
 Node *allocateMemory() { 
 	Node *node = new Node[26];
 	for (int counter = 0; counter < 26; counter++) {
@@ -36,12 +36,12 @@ Node *allocateMemory() {
 	return node;
 }
 
-//освобождение выделенной памяти для узлов
+//Г®Г±ГўГ®ГЎГ®Г¦Г¤ГҐГ­ГЁГҐ ГўГ»Г¤ГҐГ«ГҐГ­Г­Г®Г© ГЇГ Г¬ГїГІГЁ Г¤Г«Гї ГіГ§Г«Г®Гў
 void freeMemory(Node *node) {
 	delete[] node;
 }
 
-//пузырьковая сортировка узлов по убыванию вероятностей появления символов
+//ГЇГіГ§Г»Г°ГјГЄГ®ГўГ Гї Г±Г®Г°ГІГЁГ°Г®ГўГЄГ  ГіГ§Г«Г®Гў ГЇГ® ГіГЎГ»ГўГ Г­ГЁГѕ ГўГҐГ°Г®ГїГІГ­Г®Г±ГІГҐГ© ГЇГ®ГїГўГ«ГҐГ­ГЁГї Г±ГЁГ¬ГўГ®Г«Г®Гў
 void bubbleSorting(int size, Node *node) {
 	for (int first = 0; first < size - 1; first++) {
 		for (int second = 0; second < size - first - 1; second++) {
@@ -54,7 +54,7 @@ void bubbleSorting(int size, Node *node) {
 	}
 }
 
-//нахождение сумм вероятностей по алгоритму Хаффмана и поиск всех узлов
+//Г­Г ГµГ®Г¦Г¤ГҐГ­ГЁГҐ Г±ГіГ¬Г¬ ГўГҐГ°Г®ГїГІГ­Г®Г±ГІГҐГ© ГЇГ® Г Г«ГЈГ®Г°ГЁГІГ¬Гі Г•Г ГґГґГ¬Г Г­Г  ГЁ ГЇГ®ГЁГ±ГЄ ГўГ±ГҐГµ ГіГ§Г«Г®Гў
 Node * searchAllNodes(Node *node) {
 	int start_node_counter = 26;
 	Node *tmp = new Node[start_node_counter - 1];
@@ -96,7 +96,7 @@ Node * searchAllNodes(Node *node) {
 	return tmp;
 }
 
-//выделение памяти для нового временного узла
+//ГўГ»Г¤ГҐГ«ГҐГ­ГЁГҐ ГЇГ Г¬ГїГІГЁ Г¤Г«Гї Г­Г®ГўГ®ГЈГ® ГўГ°ГҐГ¬ГҐГ­Г­Г®ГЈГ® ГіГ§Г«Г 
 Node *getFreeNode(float freq, string code, string symbols, Node *parent) {
 	Node *tmp = new Node;
 	tmp->left = tmp->right = nullptr;
@@ -107,7 +107,7 @@ Node *getFreeNode(float freq, string code, string symbols, Node *parent) {
 	return tmp;
 }
 
-//добавление узла в дерево
+//Г¤Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ ГіГ§Г«Г  Гў Г¤ГҐГ°ГҐГўГ®
 void addNode(Node *&tree, Node node) {
 	Node *tmp = nullptr;
 	if (tree == nullptr) {
@@ -143,7 +143,7 @@ void addNode(Node *&tree, Node node) {
 	}
 }
 
-//построение итоговых кодов для каждого узла
+//ГЇГ®Г±ГІГ°Г®ГҐГ­ГЁГҐ ГЁГІГ®ГЈГ®ГўГ»Гµ ГЄГ®Г¤Г®Гў Г¤Г«Гї ГЄГ Г¦Г¤Г®ГЈГ® ГіГ§Г«Г 
 Node *codeBuilding(Node *root, char arr) {
 	string str(1, arr);
 	string makeCode = "";
@@ -168,7 +168,7 @@ Node *codeBuilding(Node *root, char arr) {
 	return nullptr;
 }
 
-//вывод дерева в консоль
+//ГўГ»ГўГ®Г¤ Г¤ГҐГ°ГҐГўГ  Гў ГЄГ®Г­Г±Г®Г«Гј
 int rec[10];
 void treePrint(Node *tree, int level) {
 	if (tree != nullptr) {
@@ -185,7 +185,7 @@ void treePrint(Node *tree, int level) {
 	}
 }
 
-//освобождение выделенной памяти для дерева
+//Г®Г±ГўГ®ГЎГ®Г¦Г¤ГҐГ­ГЁГҐ ГўГ»Г¤ГҐГ«ГҐГ­Г­Г®Г© ГЇГ Г¬ГїГІГЁ Г¤Г«Гї Г¤ГҐГ°ГҐГўГ 
 void freeTree(Node *tree) {
 	if (tree != nullptr) {
 		freeTree(tree->left);
